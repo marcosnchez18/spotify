@@ -32,39 +32,62 @@ class Album extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function duracion_album()
+    {
+        $registros = AlbumCancion::where('album_id', $this->id)->get();
+        $duracion = 0;
+
+        foreach ($registros as $registro) {
+            $cancion = Cancion::find($registro->cancion_id);
+            $tiempo = $cancion->duracion;
+
+            // Convertir la duración a minutos y segundos
+            list($horas, $minutos, $segundos) = explode(':', $tiempo);
+            $duracion += $minutos * 60 + $segundos;
+        }
+
+        // Convertir la duración total de segundos a formato minutos:segundos
+        $minutos = floor($duracion / 60);
+        $segundos = $duracion % 60;
+
+        return sprintf('%02d:%02d', $minutos, $segundos);
+    }
+
+
+
+
+
 
 
     //para imágenes:
 
     private function imagen_url_relativa()
-   {
-       return '/uploads/' . $this->foto;
-   }
+    {
+        return '/uploads/' . $this->foto;
+    }
 
 
-   public function getImagenUrlAttribute()
-   {
-       return Storage::url(mb_substr($this->imagen_url_relativa(), 1));
-   }
+    public function getImagenUrlAttribute()
+    {
+        return Storage::url(mb_substr($this->imagen_url_relativa(), 1));
+    }
 
 
-   public function existeImagen()
-   {
-       return Storage::disk('public')->exists($this->imagen_url_relativa());
-   }
+    public function existeImagen()
+    {
+        return Storage::disk('public')->exists($this->imagen_url_relativa());
+    }
 
 
-   public function guardar_imagen(UploadedFile $imagen, string $nombre, int $escala, ?ImageManager $manager = null)
-   {
-       if ($manager === null) {
-           $manager = new ImageManager(new Driver());
-       }
-       Storage::makeDirectory('public/uploads');
-       $imagen = $manager->read($imagen);
-       $imagen->scaleDown($escala);
-       $ruta = Storage::path('public/uploads/' . $nombre);
-       $imagen->save($ruta);
-   }
-
+    public function guardar_imagen(UploadedFile $imagen, string $nombre, int $escala, ?ImageManager $manager = null)
+    {
+        if ($manager === null) {
+            $manager = new ImageManager(new Driver());
+        }
+        Storage::makeDirectory('public/uploads');
+        $imagen = $manager->read($imagen);
+        $imagen->scaleDown($escala);
+        $ruta = Storage::path('public/uploads/' . $nombre);
+        $imagen->save($ruta);
+    }
 }
-

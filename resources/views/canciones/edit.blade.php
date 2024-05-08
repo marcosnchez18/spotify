@@ -17,8 +17,8 @@
             <div>
                 <x-input-label for="duracion" :value="'duracion del cancion'" />
                 <x-text-input id="duracion" class="block mt-1 w-full"
-                    type="text" name="duracion" :value="old('duracion')" required
-                    autofocus autocomplete="duracion" />
+                    type="text" name="duracion" :value="old('duracion', $cancion->duracion)" required
+                    autofocus autocomplete="duracion" />                                                       <!-- Ojo con esas cosas , que es para que se guarde la antigua -->
                 <x-input-error :messages="$errors->get('duracion')" class="mt-2" />
             </div>
 

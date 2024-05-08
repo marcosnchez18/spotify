@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\AlbumArtista;
+use App\Models\AlbumCancion;
 use Illuminate\Http\Request;
 
 //para imágenes:
@@ -42,17 +44,17 @@ class AlbumController extends Controller
             'titulo' => 'required|max:255',
         ]);
 
-        $album = new Album();
+        $album = new Album();                         //img
         $imagen = $request->file('foto');            //img
         Storage::makeDirectory('public/album');      //img
         $nombre = Carbon::now() . '.jpeg';          //img
         $manager = new ImageManager(new Driver());  //img
 
-        $album->guardar_imagen($imagen, $nombre, 100, $manager);
+        $album->guardar_imagen($imagen, $nombre, 100, $manager);  //img
 
-
+        //$album = new Album();  si no hay img descomentar
         $album->titulo = $validated['titulo'];
-        $album->foto = $nombre;
+        $album->foto = $nombre;   //img
         $album->save();
 
         session()->flash('success', 'El álbum se ha creado correctamente.');
@@ -88,7 +90,15 @@ class AlbumController extends Controller
             'titulo' => 'required|max:255',
         ]);
 
+        $imagen = $request->file('foto');            //img
+        Storage::makeDirectory('public/album');      //img
+        $nombre = Carbon::now() . '.jpeg';          //img
+        $manager = new ImageManager(new Driver());  //img
+
+        $album->guardar_imagen($imagen, $nombre, 100, $manager);    //img
+
         $album->titulo = $validated['titulo'];
+        $album->foto = $nombre;     //si no img, se quita esta linea
         $album->save();
         session()->flash('success', 'Album cambiado correctamente');
         return redirect()->route('albumes.index');
@@ -99,6 +109,18 @@ class AlbumController extends Controller
      */
     public function destroy(Album $album)
     {
+
+        //AlbumCancion::where('arlbum_id', $album->id)->delete();
+        //AlbumArtista::where('album_id', $album->id)->delete();   //esto es si queremos que se borre y listo, pero el ejercicio nos dice que se impida borrar
+        $r1 = AlbumCancion::where('album_id', $album->id)->count();
+        $r2 = AlbumArtista::where('album_id', $album->id)->count();
+
+        if ($r1 > 0 || $r2 > 0) {
+            session()->flash('error', 'No se puede borrar una album con canciones');
+            return redirect()->route('canciones.index');   //sin esto no funcionaría
+        }
+
+
         $album->delete();
         session()->flash('success', 'Album eliminado correctamente.');
         return redirect()->route('albumes.index');

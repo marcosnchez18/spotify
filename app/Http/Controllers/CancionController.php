@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\AlbumCancion;
 use App\Models\Artista;
+use App\Models\ArtistaCancion;
 use App\Models\Cancion;
 use Illuminate\Http\Request;
 
@@ -12,10 +14,18 @@ class CancionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        $order = $request->query('order', 'titulo');
+        $order_dir = $request->query('order_dir', 'asc');
+
+        $canciones = Cancion::orderBy($order, $order_dir)->paginate(2);
+
         return view('canciones.index', [
-            'canciones' => Cancion::all(),
+            'canciones' => $canciones,
+            'order' => $order,
+            'order_dir' => $order_dir
         ]);
     }
 
@@ -89,8 +99,19 @@ class CancionController extends Controller
      */
     public function destroy(Cancion $cancion)
     {
+        //AlbumCancion::where('cancion_id', $cancion->id)->delete();
+        //ArtistaCancion::where('cancion_id', $cancion->id)->delete();   //esto es si queremos que se borre y listo, pero el ejercicio nos dice que se impida borrar
+        $r1 = AlbumCancion::where('cancion_id', $cancion->id)->count();
+        $r2 = ArtistaCancion::where('cancion_id', $cancion->id)->count();
+
+        if ($r1 > 0 || $r2 > 0) {
+            session()->flash('error', 'No se puede borrar una cancion de un artista contenida en un álbum');
+            return redirect()->route('canciones.index');   //sin esto no funcionaría
+        }
+
         $cancion->delete();
-        session()->flash('success', 'Cancion eliminada correctamente.');
+
+        session()->flash('success', 'Canción eliminada correctamente.');
         return redirect()->route('canciones.index');
     }
 }

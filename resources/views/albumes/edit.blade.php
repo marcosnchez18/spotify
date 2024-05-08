@@ -1,9 +1,17 @@
 <x-app-layout>
     <div class="w-1/2 mx-auto">
         <form method="POST"
-            action="{{ route('albumes.update', ['album' => $album]) }}">
+            action="{{ route('albumes.update', ['album' => $album]) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            <!-- Foto -->
+            <div>
+                <x-input-label for="foto" :value="'Foto del Album'" />
+                <x-text-input id="foto" class="block mt-1 w-full" type="file" name="foto" :value="old('foto', $album->foto)"
+                    required autofocus autocomplete="foto" />
+                <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+            </div>
 
             <!-- Titulo -->
             <div>

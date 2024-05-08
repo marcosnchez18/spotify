@@ -4,8 +4,11 @@
         <table class="w-full text-sm text-left rtl:text-right text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
-                    <th  class="px-6 py-3">
-                        Titulo
+                    <th scope="col" class="px-6 py-3">
+                        <a href="{{ route('canciones.index', ['order' => 'titulo', 'order_dir' => order_dir($order == 'titulo', $order_dir)]) }}"
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                            Titulo {{ order_dir_arrow($order == 'titulo', $order_dir) }}
+                        </a>
                     </th>
                     <th  class="px-6 py-3">
                         Duración
@@ -56,5 +59,6 @@
         <form action="{{ route('canciones.create') }}" class="flex justify-center mt-4 mb-4">
             <x-primary-button class="bg-green-500">Insertar un nuevo cancion</x-primary-button>
         </form>
+        {{$canciones->links()}}
     </div>
 </x-app-layout>

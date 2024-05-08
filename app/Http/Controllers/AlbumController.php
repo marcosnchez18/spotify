@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\AlbumArtista;
 use App\Models\AlbumCancion;
+use App\Models\Artista;
 use Illuminate\Http\Request;
 
 //para imágenes:

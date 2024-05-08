@@ -51,4 +51,5 @@ class Cancion extends Model
         }
         return $nombres_albumes ? '<ul>' . $nombres_albumes . '</ul>' : 'Sin albumes';
     }
+
 }

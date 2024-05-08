@@ -23,4 +23,6 @@ class Artista extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
+    
 }

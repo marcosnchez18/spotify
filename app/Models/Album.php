@@ -53,6 +53,45 @@ class Album extends Model
         return sprintf('%02d:%02d', $minutos, $segundos);
     }
 
+    public function artistas_album()
+    {
+        $artistas = AlbumArtista::where('album_id', $this->id)->get();
+        $nombres_artistas = '';
+        foreach ($artistas as $artista) {
+            $nombre = $artista->artista_id;
+
+            $ar = Artista::find($nombre);
+            $nombres_artistas .= '<li>' . $ar->nombre . '</li>';
+        }
+        return $nombres_artistas ? '<ul>' . $nombres_artistas . '</ul>' : 'Sin artistas';
+    }
+
+    public function nombres_canciones()
+    {
+        $canciones = AlbumCancion::where('album_id', $this->id)->get();
+        $nombres_canciones = '';
+        foreach ($canciones as $cancion) {
+            $nombre = $cancion->cancion_id;
+
+            $al = Cancion::find($nombre);
+            $nombres_canciones .= '<li>' . $al->titulo . '</li>';
+        }
+        return $nombres_canciones ? '<ul>' . $nombres_canciones . '</ul>' : 'Sin canciones';
+    }
+
+    public function duraciones()
+    {
+        $canciones = AlbumCancion::where('album_id', $this->id)->get();
+        $nombres_canciones = '';
+        foreach ($canciones as $cancion) {
+            $nombre = $cancion->cancion_id;
+
+            $al = Cancion::find($nombre);
+            $nombres_canciones .= '<li>' . $al->duracion . '</li>';
+        }
+        return $nombres_canciones ? '<ul>' . $nombres_canciones . '</ul>' : 'Sin canciones';
+    }
+
 
 
 

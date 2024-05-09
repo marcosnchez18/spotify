@@ -38,9 +38,7 @@
                             </a>
                         </th>
                         <th  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                            <a href="{{ route('albumes.show', ['album' => $album]) }}" class="text-blue-500">
                                 {!! $album->duracion_album() !!}
-                            </a>
                         </th>
 
                         <td class="px-6 py-4">
